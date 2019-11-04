@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import javax.swing.JOptionPane;
+
 public class Mercadoria {
 	
 	private  String codigo;
@@ -81,7 +83,7 @@ public class Mercadoria {
 	         
 	      } 
 	      catch (SQLException e){
-	         System.out.println("Favor verificar os dados");
+	    	  JOptionPane.showMessageDialog(null, "Favor verificar, dados invalidos");
 	      }
 	   }
 
