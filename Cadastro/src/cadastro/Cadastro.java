@@ -3,12 +3,12 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,6 +17,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import com.toedter.calendar.JDateChooser;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class Cadastro extends JFrame {
 
@@ -27,10 +31,8 @@ public class Cadastro extends JFrame {
 	private JLabel lblValor;
 	private JTextField txtValor;
 	private JLabel lblDataAtualizao;
-	private JTextField txtData;
-	private JLabel lblAtivo;
-	private JTextField txtAtivo;
-	Connection conn = Conexao.getConnection();
+	private JLabel lblStatus;
+	
 
 	/**
 	 * Launch the application.
@@ -53,7 +55,6 @@ public class Cadastro extends JFrame {
 
 
 	public Cadastro() {
-		
 			
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 485, 278);
@@ -102,37 +103,33 @@ public class Cadastro extends JFrame {
 		lblDataAtualizao.setBounds(22, 153, 96, 14);
 		contentPane.add(lblDataAtualizao);
 		
-		txtData = new JTextField();
-		txtData.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				txtData.setText("Ola");
-			}
-		});
-		txtData.setBounds(123, 150, 86, 20);
-		contentPane.add(txtData);
-		txtData.setColumns(10);
+		lblStatus = new JLabel("Status");
+		lblStatus.setBounds(22, 184, 46, 14);
+		contentPane.add(lblStatus);
 		
-		lblAtivo = new JLabel("Ativo");
-		lblAtivo.setBounds(22, 184, 46, 14);
-		contentPane.add(lblAtivo);
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Ativo", "Desativado"}));
+		comboBox.setToolTipText("");
+		comboBox.setBounds(123, 181, 105, 20);
+		contentPane.add(comboBox);
 		
-		txtAtivo = new JTextField();
-		txtAtivo.setBounds(123, 181, 86, 20);
-		contentPane.add(txtAtivo);
-		txtAtivo.setColumns(10);
+		JDateChooser dateChooser = new JDateChooser();
+		dateChooser.setDate(java.sql.Date.valueOf(java.time.LocalDate.now()));
+		dateChooser.setBounds(123, 151, 105, 20);
+		contentPane.add(dateChooser);
 		
 		JButton btnCadastrar = new JButton("Cadastrar");
 		btnCadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-								
+				Connection conn = Conexao.getConnection();	
+				
 				try {
 					
 					conn.setAutoCommit(false);
 					Mercadoria mercadoria = new Mercadoria();
-					SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-					boolean resp = (txtAtivo.getText().equalsIgnoreCase("sim")) ? true : false;
+					boolean resp = (comboBox.getSelectedItem().equals("Ativo")) ? true : false;
 					
-					java.util.Date utilDate = format.parse(txtData.getText());
+					java.util.Date utilDate = dateChooser.getDate();
 			        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 					
 					mercadoria.setCodigo(txtCodigo.getText());
@@ -146,17 +143,20 @@ public class Cadastro extends JFrame {
 					
 					ResultSet checar = myStmt.executeQuery ("SELECT * FROM mercadoria WHERE codigo = '" + txtCodigo.getText() + "'");
 					if (checar.next()) {
+						
 						JOptionPane.showMessageDialog(null, "O cadastro já existe");
 						
 					}
 					else {
+						SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+						String dataString = formato.format(utilDate);
 						
-						int confirma = JOptionPane.showConfirmDialog(null, "Os dados estão corretos:\nCodigo de barras: " + txtCodigo.getText()
+						int confirma = JOptionPane.showConfirmDialog(null, "Os dados estão corretos:\n\nCodigo de barras: " + txtCodigo.getText()
 															+ "\nDescrição: " + txtDesc.getText()
 															+ "\nUnidade: " + txtUni.getText()
 															+ "\nPreço: " + txtValor.getText()
-															+ "\nData: " + txtData.getText()
-															+ "\nAtivo: " + txtAtivo.getText()
+															+ "\nData: " + dataString
+															+ "\nAtivo: " + comboBox.getSelectedItem()
 															, "Confirme", JOptionPane.YES_NO_OPTION);
 						
 							if (confirma == 0) {
@@ -168,24 +168,16 @@ public class Cadastro extends JFrame {
 								txtDesc.setText("");
 								txtUni.setText("");
 								txtValor.setText("");
-								txtData.setText("");
-								txtAtivo.setText("");
+								dateChooser.setDate(java.sql.Date.valueOf(java.time.LocalDate.now()));
 								
-								mercadoria.setCodigo("");
-								mercadoria.setDescricao("");
-								mercadoria.setUnidade("");
-								mercadoria.setPreco(0);
-								format.parse("");
-								resp = false;
 
-								
 								}
 
 					}
 			        
 
 			      } 
-			      catch(SQLException | ParseException erro){
+			      catch(SQLException erro){
 			    	  JOptionPane.showMessageDialog(null, erro + "erro1");
 			         if(conn != null){
 			            try{
@@ -212,5 +204,6 @@ public class Cadastro extends JFrame {
 		});
 		btnCadastrar.setBounds(353, 201, 105, 23);
 		contentPane.add(btnCadastrar);
+		
 	}
 }
