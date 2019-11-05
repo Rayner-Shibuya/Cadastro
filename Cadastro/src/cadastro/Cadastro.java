@@ -154,7 +154,7 @@ public class Cadastro extends JFrame {
 						int confirma = JOptionPane.showConfirmDialog(null, "Os dados estão corretos:\n\nCodigo de barras: " + txtCodigo.getText()
 															+ "\nDescrição: " + txtDesc.getText()
 															+ "\nUnidade: " + txtUni.getText()
-															+ "\nPreço: " + txtValor.getText()
+															+ "\nPreço: R$ " + txtValor.getText()
 															+ "\nData: " + dataString
 															+ "\nAtivo: " + comboBox.getSelectedItem()
 															, "Confirme", JOptionPane.YES_NO_OPTION);

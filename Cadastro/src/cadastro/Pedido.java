@@ -1,5 +1,11 @@
 package cadastro;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import javax.swing.JOptionPane;
+
 public class Pedido {
 	
 	private int idPedido;
@@ -57,7 +63,16 @@ public class Pedido {
 		this.cancelado = cancelado;
 	}
 	
-	
+	public void trazer(Connection conn){
+	      String comando = "SELECT * FROM mercadoria (codigo, descricao, unidade, preco, dataAtualizacao, ativo) values(?,?,?,?,?,?)";
+	      try(PreparedStatement pst = conn.prepareStatement(comando);){
+	    	  
+	    	  
+	      } 
+	      catch (SQLException e){
+	    	  JOptionPane.showMessageDialog(null, "Favor verificar, dados invalidos");
+	      }
+	   }
 	
 	
 }
