@@ -86,6 +86,35 @@ public class Mercadoria {
 	    	  JOptionPane.showMessageDialog(null, "Favor verificar, dados invalidos");
 	      }
 	   }
+	
+	
+	public void trazer(Connection conn) {
+		String comando = "SELECT descricao, preco WHERE codigo =?";
+		try (PreparedStatement pst = conn.prepareStatement(comando);){
+			
+			pst.setString(1, codigo);
+			
+		}
+		catch (SQLException e){
+	    	  JOptionPane.showMessageDialog(null, "Favor verificar, dados invalidos");
+	      }
+	   }
+		
+	
+	public void atualizar(Connection conn){
+	      String comando = "UPDATE mercadoria SET preco=? WHERE codigo=?";
+	      try(PreparedStatement pst = conn.prepareStatement(comando);){
+	         
+	         pst.setDouble(1, preco);
+	         pst.setString(2, codigo);
+
+	         pst.execute();
+	         
+	      } 
+	      catch (SQLException e){
+	         e.printStackTrace();
+	      }
+	   }
 
 	
 	
