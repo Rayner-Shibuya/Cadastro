@@ -93,10 +93,11 @@ public class Mercadoria {
 		try (PreparedStatement pst = conn.prepareStatement(comando);){
 			
 			pst.setString(1, codigo);
+			pst.execute();
 			
 		}
 		catch (SQLException e){
-	    	  JOptionPane.showMessageDialog(null, "Favor verificar, dados invalidos");
+	    	  JOptionPane.showMessageDialog(null, "Produto não está cadastrado");
 	      }
 	   }
 		

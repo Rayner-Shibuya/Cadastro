@@ -117,6 +117,7 @@ public class Cadastro extends JFrame {
 		dateChooser.setDate(java.sql.Date.valueOf(java.time.LocalDate.now()));
 		dateChooser.setBounds(123, 151, 105, 20);
 		contentPane.add(dateChooser);
+		dateChooser.setEnabled(false);
 		
 		JButton btnCadastrar = new JButton("Cadastrar");
 		btnCadastrar.addActionListener(new ActionListener() {
@@ -160,6 +161,7 @@ public class Cadastro extends JFrame {
 															, "Confirme", JOptionPane.YES_NO_OPTION);
 						
 							if (confirma == 0) {
+								
 								mercadoria.inserir(conn);
 								conn.commit();
 								JOptionPane.showMessageDialog(null, "Cadastro efetuado");

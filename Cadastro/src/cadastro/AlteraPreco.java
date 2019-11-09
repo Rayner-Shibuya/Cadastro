@@ -51,19 +51,14 @@ public class AlteraPreco extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblCodigoDoProduto = new JLabel("Codigo do produto");
-		lblCodigoDoProduto.setBounds(21, 36, 102, 14);
+		lblCodigoDoProduto.setBounds(21, 36, 119, 14);
 		contentPane.add(lblCodigoDoProduto);
-		
-		txtCodigo = new JTextField();
-		txtCodigo.setBounds(133, 33, 260, 20);
-		contentPane.add(txtCodigo);
-		txtCodigo.setColumns(10);
 		
 		JLabel lblProduto = new JLabel("Produto");
 		lblProduto.setBounds(33, 85, 46, 14);
 		contentPane.add(lblProduto);
 		
-		JLabel lblNome = new JLabel("nome");
+		JLabel lblNome = new JLabel("");
 		lblNome.setBounds(99, 85, 228, 14);
 		contentPane.add(lblNome);
 		
@@ -71,7 +66,7 @@ public class AlteraPreco extends JFrame {
 		lblPreco.setBounds(33, 125, 46, 14);
 		contentPane.add(lblPreco);
 		
-		JLabel lblPrecoVelho = new JLabel("preco");
+		JLabel lblPrecoVelho = new JLabel("");
 		lblPrecoVelho.setBounds(99, 125, 68, 14);
 		contentPane.add(lblPrecoVelho);
 		
@@ -84,33 +79,33 @@ public class AlteraPreco extends JFrame {
 		lblNovoPreo.setBounds(21, 170, 68, 14);
 		contentPane.add(lblNovoPreo);
 		
-		JButton btnConfirma = new JButton("Confirma");
-		btnConfirma.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				Connection conn = Conexao.getConnection();
+		txtCodigo = new JTextField();
+		txtCodigo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Connection conn = Conexao.getConnection();	
 				
 				try {
 					
 					conn.setAutoCommit(false);
 					Mercadoria mercadoria = new Mercadoria();
-										
+					
 					mercadoria.setCodigo(txtCodigo.getText());
-										
+					
 					Statement myStmt = conn.createStatement();
 					
 					ResultSet checar = myStmt.executeQuery ("SELECT * FROM mercadoria WHERE codigo = '" + txtCodigo.getText() + "'");
-					
 					if (checar.next()) {
-						mercadoria.setPreco(Double.parseDouble(txtPrecoNovo.getText()));
-						mercadoria.atualizar(conn);
+						
 						conn.commit();
-						JOptionPane.showMessageDialog(null, "Preço atualizado");
-
-							
+						lblNome.setText(checar.getString("descricao"));
+						lblPrecoVelho.setText("R$ " + checar.getDouble("preco"));
+						
+						
 					}
 					else {
 						
-						JOptionPane.showMessageDialog(null, "O cadastro não existe");
+						JOptionPane.showMessageDialog(null, "O produto não existe");
+
 					}
 			        
 
@@ -136,7 +131,76 @@ public class AlteraPreco extends JFrame {
 			            }
 			         }      
 			      }
+			   
 			}
+		});
+		txtCodigo.setBounds(133, 33, 260, 20);
+		contentPane.add(txtCodigo);
+		txtCodigo.setColumns(10);
+		
+		JButton btnConfirma = new JButton("Confirma");
+		btnConfirma.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Connection conn = Conexao.getConnection();	
+				
+				try {
+					
+					conn.setAutoCommit(false);
+					Mercadoria mercadoria = new Mercadoria();
+					
+					mercadoria.setCodigo(txtCodigo.getText());
+					
+					Statement myStmt = conn.createStatement();
+					
+					ResultSet checar = myStmt.executeQuery ("SELECT * FROM mercadoria WHERE codigo = '" + txtCodigo.getText() + "'");
+					if (checar.next()) {
+						
+						int confirma = JOptionPane.showConfirmDialog(null, "O novo preço esta correto?\n\nDescrição: " + lblNome.getText()
+						+ "\nPreço anterior: R$ " + lblPrecoVelho.getText()
+						+ "\nPreço novo: R$ " + txtPrecoNovo.getText()
+						, "Confirme", JOptionPane.YES_NO_OPTION);
+						
+						if (confirma == 0) {
+						mercadoria.setPreco(Double.parseDouble(txtPrecoNovo.getText()));
+						mercadoria.atualizar(conn);
+						conn.commit();
+						JOptionPane.showMessageDialog(null, "Preco atualizado");
+						
+						}
+						
+					}
+					else {
+						
+						JOptionPane.showMessageDialog(null, "Produto não existe, favor verificar ");
+
+					}
+			        
+
+			      } 
+			      catch(SQLException erro){
+			    	  JOptionPane.showMessageDialog(null, erro + "erro1");
+			         if(conn != null){
+			            try{
+			               conn.rollback();
+			            } 
+			            catch(SQLException e1){
+			            	JOptionPane.showMessageDialog(null, e1 + "erro2");
+			            }
+			         }
+			      } 
+			      finally{
+			         if(conn != null){
+			            try{
+			               conn.close();
+			            } 
+			            catch(SQLException e1){
+			            	JOptionPane.showMessageDialog(null, e1 + "erro3");
+			            }
+			         }      
+			      }
+			   
+			}
+				
 		});
 		btnConfirma.setBounds(317, 209, 89, 23);
 		contentPane.add(btnConfirma);
