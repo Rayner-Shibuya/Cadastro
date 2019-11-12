@@ -116,6 +116,22 @@ public class Mercadoria {
 	         e.printStackTrace();
 	      }
 	   }
+	
+	
+	public void atualizarBoolean(Connection conn){
+	      String comando = "UPDATE mercadoria SET ativo=? WHERE codigo=?";
+	      try(PreparedStatement pst = conn.prepareStatement(comando);){
+	         
+	         pst.setBoolean(1, ativo);
+	         pst.setString(2, codigo);
+
+	         pst.execute();
+	         
+	      } 
+	      catch (SQLException e){
+	         e.printStackTrace();
+	      }
+	   }
 
 	
 	

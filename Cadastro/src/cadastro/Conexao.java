@@ -18,7 +18,7 @@ public class Conexao {
 
 	public static Connection getConnection() {
 		try {
-			return DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb?useTimezone=true&serverTimezone=UTC", "root", "root");
+			return DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb?useTimezone=true&serverTimezone=UTC", "root", "Alunos");
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, "Não foi possivel estabelecer conexão com o banco");
 		}

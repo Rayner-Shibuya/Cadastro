@@ -149,7 +149,7 @@ public class DesativaProduto extends JFrame {
 					
 					conn.setAutoCommit(false);
 					Mercadoria mercadoria = new Mercadoria();
-					boolean resp = (comboBox.getSelectedItem().equals("Desativado")) ? false : true;
+					boolean resp = (comboBox.getSelectedItem().equals("Ativo")) ? true : false;
 					
 					mercadoria.setCodigo(txtCodigo.getText());
 					
@@ -164,7 +164,7 @@ public class DesativaProduto extends JFrame {
 						
 						if (confirma == 0) {
 						mercadoria.setAtivo(resp);
-						mercadoria.atualizar(conn);
+						mercadoria.atualizarBoolean(conn);
 						conn.commit();
 						JOptionPane.showMessageDialog(null, "Produto desativado");
 						
